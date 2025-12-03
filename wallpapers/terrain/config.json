@@ -1,0 +1,44 @@
+{
+    "htmlWidgetFile": "index.html",
+    "htmlrender": true,
+    "metadata": {
+        "themeName": "Terrain",
+        "author": "Octos",
+        "authorUrl": "#",
+        "description": "Interactive auto-scrolling terrain with a variety of biomes to choose from. Explore dense forests, deep blue oceans, archipelagos, and more right from your desktop. Double-click and hold down to draw.",
+        "thumbnailImage": "terrain.gif"
+    },
+    "options": {
+        "speed": {
+            "type": "range",
+            "label": "Scroll speed",
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "value": 1,
+            "onchangeload": "(value) => window.setScrollSpeed(parseInt(value)/20)"
+        },
+        "scale": {
+            "type": "range",
+            "label": "Scale",
+            "min": 1,
+            "max": 8,
+            "step": 1,
+            "value": 6,
+            "onchangeload": "(value) => window.setScale(parseInt(value))"
+        },
+        "theme": {
+            "type": "select",
+            "label": "Theme",
+            "options": [
+                "Archipelago",
+                "Desert",
+                "Ocean",
+                "Tundra",
+                "Savanna",
+                "Forest"
+            ],
+            "onchangeload": "window.setTheme"
+        }
+    }
+}

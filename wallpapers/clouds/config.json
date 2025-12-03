@@ -1,0 +1,31 @@
+{
+    "htmlWidgetFile": "index.html",
+    "htmlrender": true,
+    "metadata": {
+        "themeName": "Cloudy Day",
+        "author": "Octos",
+        "authorUrl": "#",
+        "description": "Animated scrolling clouds with a digital time display. Adapted from mrdoob's cloud demo.",
+        "thumbnailImage": "clouds.gif"
+    },
+    "options": {
+        "time": {
+            "type": "checkbox",
+            "label": "Display time",
+            "value": true,
+            "onchangeload": "(value) => window.setTime(value == 'true')"
+        },
+        "parallax": {
+            "type": "checkbox",
+            "label": "Parallax",
+            "value": true,
+            "onchangeload": "(value) => window.parallax = value == 'true';"
+        },
+        "fly": {
+            "type": "checkbox",
+            "label": "Fly-through",
+            "value": true,
+            "onchangeload": "(value) => window.fly = value == 'true';"
+        }
+    }
+}

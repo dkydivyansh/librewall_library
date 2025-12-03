@@ -1,0 +1,11 @@
+{
+  "htmlWidgetFile": "wallpaper.html",
+  "htmlrender": true,
+  "metadata": {
+    "themeName": "Terminal",
+    "author": "Octos",
+    "authorUrl": "#",
+    "description": "Terminal theme with anamition and multiple modes",
+    "thumbnailImage": "thumb.gif"
+  }
+}

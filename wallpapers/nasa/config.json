@@ -1,0 +1,11 @@
+{
+    "htmlWidgetFile": "wallpaper.html",
+    "htmlrender": true,
+    "metadata": {
+        "themeName": "Eyes on the Solar System",
+        "author": "Octos",
+        "authorUrl": "#",
+        "description": "Explore planets, moons, asteroids, comets, and spacecraft in 3D. From eyes.nasa.gov.",
+        "thumbnailImage": "nasa.gif"
+    }
+}
