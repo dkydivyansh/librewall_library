@@ -1,0 +1,11 @@
+{
+    "htmlWidgetFile": "index.html",
+    "htmlrender": true,
+    "metadata": {
+        "themeName": "Mandelbrot",
+        "author": "Octos",
+        "authorUrl": "#",
+        "description": "The Mandelbrot set is a fractal in the complex plane originally visualized by Benoit Mandelbrot in 1980. Explore it right on your desktop with up to 64-bit scale precision with the power of WebAssembly. Click and drag anywhere to zoom.",
+        "thumbnailImage": "fractal.gif"
+    }
+}

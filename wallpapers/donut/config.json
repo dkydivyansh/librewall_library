@@ -1,0 +1,11 @@
+{
+    "htmlWidgetFile": "index.html",
+    "htmlrender": true,
+    "metadata": {
+        "themeName": "Donut",
+        "author": "Octos",
+        "authorUrl": "#",
+        "description": "Just a donut. From Donut-JS",
+        "thumbnailImage": "donut.png"
+    }
+}

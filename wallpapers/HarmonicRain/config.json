@@ -1,0 +1,11 @@
+{
+    "htmlWidgetFile": "index.html",
+    "htmlrender": true,
+    "metadata": {
+        "themeName": "Harmonic Rain",
+        "author": "Clockworked",
+        "authorUrl": "https://github.com/clock-worked",
+        "description": "Falling balls reflect off user-drawn strings to create piano-like tones.",
+        "thumbnailImage": "preview.gif"
+    }
+}

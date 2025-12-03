@@ -1,0 +1,25 @@
+{
+    "htmlWidgetFile": "index.html",
+    "htmlrender": true,
+    "metadata": {
+        "themeName": "Conway",
+        "author": "squiemperor",
+        "authorUrl": "#",
+        "description": "A simple interactive visualization for Conway's Game of Life.",
+        "thumbnailImage": "conway.gif"
+    },
+    "options": {
+        "background": {
+            "type": "color-picker",
+            "label": "Background color",
+            "onchangeload": "updateBackground",
+            "value": "#000000"
+        },
+        "foreground": {
+            "type": "color-picker",
+            "label": "Foreground color",
+            "onchangeload": "updateForeground",
+            "value": "#ffffff"
+        }
+    }
+}

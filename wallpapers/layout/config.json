@@ -1,0 +1,11 @@
+{
+    "htmlWidgetFile": "index.html",
+    "htmlrender": true,
+    "metadata": {
+        "themeName": "Layout",
+        "author": "Octos",
+        "authorUrl": "#",
+        "description": "Choose an image/video to set as your wallpaper and customize it with interactive widgets.",
+        "thumbnailImage": "layout.gif"
+    }
+}
