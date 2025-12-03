@@ -1,0 +1,11 @@
+{
+    "htmlWidgetFile": "index.html",
+    "htmlrender": true,
+    "metadata": {
+        "themeName": "Contraption",
+        "author": "Octos",
+        "authorUrl": "#",
+        "description": "A complete physics sandbox, right on your desktop. From cars to bridges, make complex machines and contraptions then let them run wild on your desktop.",
+        "thumbnailImage": "contraption.gif"
+    }
+}
