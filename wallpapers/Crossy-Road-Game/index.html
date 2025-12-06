@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Talha - Crossy Road Game Clone</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* LEADERBOARD (Left Side) */
+    #leaderboard-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      z-index: 200;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 15px;
+      border-radius: 8px;
+      min-width: 160px;
+      pointer-events: none;
+      /* Allows clicks to pass through to game if needed */
+    }
+
+    #leaderboard-container h3 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      text-transform: uppercase;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      padding-bottom: 5px;
+      letter-spacing: 1px;
+    }
+
+    #leaderboard-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 13px;
+    }
+
+    #leaderboard-list li {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    #leaderboard-list span.rank {
+      color: #f0619a;
+      margin-right: 5px;
+      font-weight: bold;
+    }
+
+    #leaderboard-list span.score {
+      color: #ffd700;
+      font-weight: bold;
+    }
+
+    /* CUSTOM HIGH SCORE POPUP (Modal) */
+    #high-score-modal {
+      display: none;
+      /* Hidden by default */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      text-align: center;
+      width: 300px;
+      font-family: 'Arial', sans-serif;
+    }
+
+    #high-score-modal h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    #high-score-modal p {
+      color: #666;
+    }
+
+    #player-name-input {
+      width: 80%;
+      padding: 10px;
+      margin: 15px 0;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    #submit-score-btn {
+      background: #f0619a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #submit-score-btn:hover {
+      background: #d0417a;
+    }
+
+    /* Adjust Main Counter Position */
+    #counter {
+      left: 220px !important;
+    }
+
+    /* Highlight for current user */
+    li.current-user {
+      background-color: rgba(255, 255, 255, 0.2);
+      /* Light highlight background */
+      border-radius: 4px;
+      padding: 0 5px;
+    }
+
+    li.current-user span.name {
+      color: #00ffff;
+      /* Cyan color for your name */
+      text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    }
+
+    span.you-tag {
+      font-size: 10px;
+      color: #fff;
+      margin-left: 5px;
+      opacity: 0.8;
+    }
+
+    /* Move right to clear leaderboard */
+  </style>
+</head>
+
+<body>
+  <div id="counter">0</div>
+
+  <div id="leaderboard-container">
+    <h3>Top 10 Leaders</h3>
+    <ul id="leaderboard-list">
+      <li>Loading...</li>
+    </ul>
+  </div>
+
+  <div id="high-score-modal">
+    <h2>New High Score!</h2>
+    <p>You made it to the Top 10.</p>
+    <input type="text" id="player-name-input" placeholder="ENTER NAME" maxlength="10">
+    <br>
+    <button id="submit-score-btn">Submit Score</button>
+  </div>
+
+  <div id="controlls">
+    <div>
+      <button id="forward"><svg width="30" height="30" viewBox="0 0 10 10">
+          <g transform="rotate(0, 5,5)">
+            <path d="M5,4 L7,6 L3,6 L5,4" />
+          </g>
+        </svg></button>
+      <button id="left"><svg width="30" height="30" viewBox="0 0 10 10">
+          <g transform="rotate(-90, 5,5)">
+            <path d="M5,4 L7,6 L3,6 L5,4" />
+          </g>
+        </svg></button>
+      <button id="backward"><svg width="30" height="30" viewBox="0 0 10 10">
+          <g transform="rotate(180, 5,5)">
+            <path d="M5,4 L7,6 L3,6 L5,4" />
+          </g>
+        </svg></button>
+      <button id="right"><svg width="30" height="30" viewBox="0 0 10 10">
+          <g transform="rotate(90, 5,5)">
+            <path d="M5,4 L7,6 L3,6 L5,4" />
+          </g>
+        </svg></button>
+    </div>
+  </div>
+
+  <div id="end">
+    <button id="retry">Retry</button>
+  </div>
+
+  <script>
+    // Simulate ID if not provided by wrapper
+    if (!window.deviceid) {
+      // Check local storage to keep ID consistent across reloads for testing
+      if (localStorage.getItem('crossy_device_id')) {
+        window.deviceid = localStorage.getItem('crossy_device_id');
+      } else {
+        window.deviceid = "user_" + Math.floor(Math.random() * 1000000);
+        localStorage.setItem('crossy_device_id', window.deviceid);
+      }
+    }
+    console.log("My Device ID:", window.deviceid);
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

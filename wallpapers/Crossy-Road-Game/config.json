@@ -1,0 +1,11 @@
+{
+  "htmlWidgetFile": "index.html",
+  "htmlrender": true,
+  "metadata": {
+    "themeName": "Crossy Road Game",
+    "author": "Dkydivyansh",
+    "authorUrl": "https://dkydivyansh.com",
+    "description": "A fun crossy road game with leaderboard and high score",
+    "thumbnailImage": "thumb.gif"
+  }
+}
