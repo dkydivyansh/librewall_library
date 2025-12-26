@@ -1,0 +1,13 @@
+{
+  "videorender": true,
+  "media": "video.mp4",
+  "metadata": {
+    "themeName": "Quasar pixel moewalls",
+    "author": "Dkydivyansh",
+    "authorUrl": "https://dkydivyansh.com",
+    "description": "A pixel art animation of quasar in space.",
+    "thumbnailImage": "thumb.gif"
+  },
+  "fpsLimit": 0,
+  "muteAudio": true
+}
