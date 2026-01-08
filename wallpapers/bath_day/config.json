@@ -1,0 +1,38 @@
+{
+  "//_MODEL_SETTINGS_": "--- Controls for the 3D model file, scale, and orientation ---",
+  "modelFile": "model.glb",
+  "modelScale": 0.23,
+  "modelFrontRotation": {
+    "//_x_": "Tilts the model UP (negative) or DOWN (positive) - 'Pitch'",
+    "x": 0,
+    "//_y_": "Turns the model LEFT (positive) or RIGHT (negative) - 'Yaw'",
+    "y": 50,
+    "//_z_": "Rolls the model SIDE-TO-SIDE (counter-clockwise is positive) - 'Roll'",
+    "z": 0
+  },
+  "enableBloom": true,
+  "toneMapping": "Filmic",
+  "toneMappingExposure": 1,
+  "enableEnvironmentHDR": false,
+  "bloomStrength": 0,
+  "bloomRadius": 0.1,
+  "bloomThreshold": 0.2,
+  "backgroundCSS": "#FFCCA2",
+  "enableIdleRotation": false,
+  "enableMouseAttraction": true,
+  "lights": [
+    {
+      "type": "AmbientLight",
+      "color": "#ffffff",
+      "intensity": 1.5
+    }
+  ],
+  "metadata": {
+    "themeName": "Bath day",
+    "author": "Dkydivyansh",
+    "authorUrl": "https://dkydivyansh.com",
+    "description": "The summer is over and cold weather has come. Its high time to bask in warm water.",
+    "thumbnailImage": "thumb.gif"
+  },
+  "Enable_Global_Widget": false
+}

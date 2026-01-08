@@ -1,0 +1,43 @@
+{
+  "//_MODEL_SETTINGS_": "--- Controls for the 3D model file, scale, and orientation ---",
+  "//_WIDGETS_": "--- Controls for on-screen widgets ---",
+  "modelFile": "model.glb",
+  "modelScale": 0.00017,
+  "modelFrontRotation": {
+    "//_x_": "Tilts the model UP (negative) or DOWN (positive) - 'Pitch'",
+    "x": 0,
+    "//_y_": "Turns the model LEFT (positive) or RIGHT (negative) - 'Yaw'",
+    "y": 50,
+    "//_z_": "Rolls the model SIDE-TO-SIDE (counter-clockwise is positive) - 'Roll'",
+    "z": 0
+  },
+  "toneMapping": "Filmic",
+  "toneMappingExposure": 1.0,
+  "enableEnvironmentHDR": true,
+  "enableBloom": true,
+  "//_BLOOM_EFFECT_": "--- Settings for the 'bloom' (glow) effect ---",
+  "bloomStrength": 0.8,
+  "bloomRadius": 1,
+  "bloomThreshold": 0.3,
+  "//_BACKGROUND_": "--- A single CSS string for the background gradient or color ---",
+  "backgroundCSS": "#000000",
+  "//_INTERACTIVITY_": "--- Controls for mouse and idle animations ---",
+  "enableIdleRotation": true,
+  "enableMouseAttraction": true,
+  "//_EXTERNAL_FILES_": "--- Files to inject, relative to this folder ---",
+  "lights": [
+    {
+      "type": "AmbientLight",
+      "color": "#ffffff",
+      "intensity": 1
+    }
+  ],
+  "metadata": {
+    "themeName": "Portal",
+    "author": "Dkydivyansh",
+    "authorUrl": "https://dkydivyansh.com",
+    "description": "A small experiment with illustrated aesthetics.",
+    "thumbnailImage": "thumb.gif"
+  },
+  "Enable_Global_Widget": false
+}
