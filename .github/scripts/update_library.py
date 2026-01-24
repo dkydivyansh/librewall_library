@@ -1,7 +1,7 @@
 import os
 import json
 import shutil
-import cloudscraper  # <--- CHANGED: Import cloudscraper
+import cloudscraper
 import subprocess
 import sys
 import tempfile
@@ -47,7 +47,7 @@ def main():
 
     # --- 2. Iterate & Process Folders ---
     folders = [f for f in os.listdir(WALLPAPER_DIR) if os.path.isdir(os.path.join(WALLPAPER_DIR, f))]
-    log(f"Found {len(folders)} folders in library.")
+    log(f"Scanning {len(folders)} folders...")
 
     for folder_name in folders:
         folder_path = os.path.join(WALLPAPER_DIR, folder_name)
@@ -56,6 +56,7 @@ def main():
         if not os.path.exists(config_path):
             continue
 
+        # Load Config
         try:
             with open(config_path, 'r') as f:
                 content = f.read()
@@ -65,36 +66,47 @@ def main():
             log(f"Error reading config for {folder_name}: {e}")
             continue
 
-        # Check/Create ZIP
+        # --- LOGIC: Check for ZIP ---
         zip_name = f"{folder_name}.zip"
         zip_path = os.path.join(folder_path, zip_name)
 
+        is_new_item = False
+
         if not os.path.exists(zip_path):
-            log(f"-> Generating ZIP for: {folder_name}...")
+            log(f"-> New Wallpaper Detected: {folder_name} (Generating ZIP...)")
+            
+            # Create ZIP
             with tempfile.TemporaryDirectory() as temp_dir:
                 temp_zip_base = os.path.join(temp_dir, folder_name)
                 shutil.make_archive(temp_zip_base, 'zip', folder_path)
                 shutil.move(f"{temp_zip_base}.zip", zip_path)
 
-            log(f"   Created {zip_name}")
+            log(f"   ZIP Created.")
             run_git_command(f"git add {zip_path}")
             changes_made = True
+            is_new_item = True
+        else:
+            # ZIP exists, so it's not "newly added"
+            # We skip adding it to the payload
+            pass
 
-        metadata = config.get("metadata", {})
-        thumb_relative = metadata.get("thumbnailImage", "thumb.gif")
-        
-        thumb_url = f"{RAW_BASE}/{WALLPAPER_DIR}/{folder_name}/{thumb_relative}"
-        zip_url = f"{MEDIA_BASE}/{WALLPAPER_DIR}/{folder_name}/{zip_name}"
+        # --- ONLY ADD TO API PAYLOAD IF IT IS NEW ---
+        if is_new_item:
+            metadata = config.get("metadata", {})
+            thumb_relative = metadata.get("thumbnailImage", "thumb.gif")
+            
+            thumb_url = f"{RAW_BASE}/{WALLPAPER_DIR}/{folder_name}/{thumb_relative}"
+            zip_url = f"{MEDIA_BASE}/{WALLPAPER_DIR}/{folder_name}/{zip_name}"
 
-        wallpaper_obj = {
-            "Theme Name": metadata.get("themeName", folder_name),
-            "Wallpaper Type": get_wallpaper_type(config),
-            "Thumbnail URL": thumb_url,
-            "ZIP URL": zip_url,
-            "Author": metadata.get("author", "Unknown"),
-            "Description": metadata.get("description", "")
-        }
-        payload_list.append(wallpaper_obj)
+            wallpaper_obj = {
+                "Theme Name": metadata.get("themeName", folder_name),
+                "Wallpaper Type": get_wallpaper_type(config),
+                "Thumbnail URL": thumb_url,
+                "ZIP URL": zip_url,
+                "Author": metadata.get("author", "Unknown"),
+                "Description": metadata.get("description", "")
+            }
+            payload_list.append(wallpaper_obj)
 
     # --- 3. Git Operations ---
     if changes_made:
@@ -105,33 +117,29 @@ def main():
         run_git_command('git push')
         log("Git push complete.")
 
-    # --- 4. Send to API using CloudScraper ---
-    log(f"Sending {len(payload_list)} wallpapers to API...")
-    
-    # Create the Scraper instance (simulates a real browser)
-    scraper = cloudscraper.create_scraper() 
-
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_token}",
-        # CloudScraper handles the User-Agent automatically, 
-        # but we add Referer to look legit
-        "Referer": "https://dkydivyansh.com/Project/admin.php" 
-    }
-
-    try:
-        # Use scraper.post instead of requests.post
-        response = scraper.post(API_URL, json=payload_list, headers=headers)
+    # --- 4. Send to API (Only if we have new items) ---
+    if len(payload_list) > 0:
+        log(f"Sending {len(payload_list)} NEW wallpapers to API...")
         
-        if response.status_code == 200:
-             log(f"Success! API Response: {response.text}")
-        else:
-             # If it fails, print the first 200 chars to debug
-             log(f"API Failed: {response.status_code} - {response.text[:200]}...")
-             sys.exit(1)
-    except Exception as e:
-        log(f"Failed to send to API: {e}")
-        sys.exit(1)
+        scraper = cloudscraper.create_scraper() 
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_token}",
+            "Referer": "https://dkydivyansh.com/Project/admin.php" 
+        }
+
+        try:
+            response = scraper.post(API_URL, json=payload_list, headers=headers)
+            if response.status_code == 200:
+                 log(f"Success! API Response: {response.text}")
+            else:
+                 log(f"API Failed: {response.status_code} - {response.text[:200]}...")
+                 sys.exit(1)
+        except Exception as e:
+            log(f"Failed to send to API: {e}")
+            sys.exit(1)
+    else:
+        log("No new wallpapers detected. Skipping API call.")
 
 if __name__ == "__main__":
     main()
