@@ -121,14 +121,16 @@ def main():
     else:
         log("No new ZIPs to generate.")
 
-    # --- 4. Send to API ---
-    log(f"Sending {len(payload_list)} wallpapers to API...")
+   log(f"Sending {len(payload_list)} wallpapers to API...")
     
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_token}",
-        # ADD THIS LINE BELOW:
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        # ADD THESE TWO LINES:
+        "Accept": "*/*",
+        "Origin": "https://dkydivyansh.com",
+        "Referer": "https://dkydivyansh.com/Project/admin.php" 
     }
 
     try:
