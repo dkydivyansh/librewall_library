@@ -30,8 +30,7 @@ jobs:
 
       - name: Run Update Script
         run: |
-          python .github/scripts/update_library.py
+          python -u .github/scripts/update_library.py 
         env:
-          # This maps the Repository Secret to the Python Environment Variable
           API_SECRET_TOKEN: ${{ secrets.API_SECRET_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
