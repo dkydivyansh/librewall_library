@@ -26,10 +26,31 @@ def run_git_command(command):
     except subprocess.CalledProcessError as e:
         log(f"Git error: {e.stderr}")
 
-def get_wallpaper_type(config_data):
-    if "modelFile" in config_data:
+# --- UPDATED TYPE LOGIC ---
+def get_wallpaper_type(config):
+    """
+    Determines wallpaper type based on config hierarchy:
+    1. Video (Primary)
+    2. App/HTML (Secondary)
+    3. 3D Scene (Tertiary/Default)
+    """
+    # 1. Check for Video
+    # Must have "videorender": true AND a valid "media" file
+    if config.get("videorender") is True and config.get("media"):
+        return "2D/Video"
+
+    # 2. Check for App / Interactive
+    # Must have "htmlrender": true AND a valid "htmlWidgetFile"
+    if config.get("htmlrender") is True and config.get("htmlWidgetFile"):
+        return "App/Interactive"
+
+    # 3. Check for 3D Model
+    # Checks if "modelFile" exists OR "enable3DModel" is explicitly true
+    if "modelFile" in config or config.get("enable3DModel") is True:
         return "3D Scene"
-    return "2D/Video"
+
+    # Default fallback
+    return "3D Scene"
 
 def main():
     # --- 1. Security Check ---
@@ -60,6 +81,7 @@ def main():
         try:
             with open(config_path, 'r') as f:
                 content = f.read()
+                # Remove comments (lines starting with //)
                 clean_content = "\n".join([line for line in content.split('\n') if not line.strip().startswith("//")])
                 config = json.loads(clean_content)
         except Exception as e:
@@ -75,7 +97,7 @@ def main():
         if not os.path.exists(zip_path):
             log(f"-> New Wallpaper Detected: {folder_name} (Generating ZIP...)")
             
-            # Create ZIP
+            # Create ZIP in temp folder to avoid recursion
             with tempfile.TemporaryDirectory() as temp_dir:
                 temp_zip_base = os.path.join(temp_dir, folder_name)
                 shutil.make_archive(temp_zip_base, 'zip', folder_path)
@@ -86,8 +108,7 @@ def main():
             changes_made = True
             is_new_item = True
         else:
-            # ZIP exists, so it's not "newly added"
-            # We skip adding it to the payload
+            # ZIP exists, ignoring.
             pass
 
         # --- ONLY ADD TO API PAYLOAD IF IT IS NEW ---
@@ -100,7 +121,7 @@ def main():
 
             wallpaper_obj = {
                 "Theme Name": metadata.get("themeName", folder_name),
-                "Wallpaper Type": get_wallpaper_type(config),
+                "Wallpaper Type": get_wallpaper_type(config), # <--- Uses new logic
                 "Thumbnail URL": thumb_url,
                 "ZIP URL": zip_url,
                 "Author": metadata.get("author", "Unknown"),
