@@ -4,6 +4,7 @@ import shutil
 import requests
 import subprocess
 import sys
+import tempfile
 
 # --- Configuration ---
 REPO_OWNER = "dkydivyansh"
@@ -21,9 +22,7 @@ def log(msg):
     print(msg, flush=True)
 
 def run_git_command(command):
-    """Runs a git command and handles errors."""
     try:
-        # log(f"Exec: {command}") # Uncomment for debug
         subprocess.run(command, check=True, shell=True, text=True, capture_output=True)
     except subprocess.CalledProcessError as e:
         log(f"Git error: {e.stderr}")
@@ -37,7 +36,7 @@ def main():
     # --- 1. Security Check ---
     api_token = os.environ.get("API_SECRET_TOKEN")
     if not api_token:
-        log("Error: API_SECRET_TOKEN not found in environment variables.")
+        log("Error: API_SECRET_TOKEN not found.")
         sys.exit(1)
 
     payload_list = []
@@ -75,16 +74,22 @@ def main():
         if not os.path.exists(zip_path):
             log(f"-> Generating ZIP for: {folder_name}...")
             
-            # Create zip explicitly avoiding including the zip itself if it exists partially
-            base_name = os.path.join(folder_path, folder_name)
-            shutil.make_archive(base_name, 'zip', folder_path)
+            # --- FIX: Create in TEMP directory first to avoid infinite loop ---
+            with tempfile.TemporaryDirectory() as temp_dir:
+                temp_zip_base = os.path.join(temp_dir, folder_name)
+                # Create zip in temp folder
+                shutil.make_archive(temp_zip_base, 'zip', folder_path)
+                
+                # Move the created zip to the actual destination
+                shutil.move(f"{temp_zip_base}.zip", zip_path)
+
+            log(f"   Created {zip_name}")
             
             # Stage the new zip file
             run_git_command(f"git add {zip_path}")
             changes_made = True
-            log(f"   Done.")
         else:
-            # log(f"   Skipping {folder_name} (ZIP exists).") 
+            # ZIP already exists
             pass
 
         # Prepare Metadata
