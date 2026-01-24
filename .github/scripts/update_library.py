@@ -1,7 +1,7 @@
 import os
 import json
 import shutil
-import requests
+import cloudscraper  # <--- CHANGED: Import cloudscraper
 import subprocess
 import sys
 import tempfile
@@ -18,7 +18,6 @@ RAW_BASE = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/{BRANCH}
 MEDIA_BASE = f"https://media.githubusercontent.com/media/{REPO_OWNER}/{REPO_NAME}/refs/heads/{BRANCH}"
 
 def log(msg):
-    """Print message immediately to console."""
     print(msg, flush=True)
 
 def run_git_command(command):
@@ -57,7 +56,6 @@ def main():
         if not os.path.exists(config_path):
             continue
 
-        # Load Config
         try:
             with open(config_path, 'r') as f:
                 content = f.read()
@@ -73,26 +71,15 @@ def main():
 
         if not os.path.exists(zip_path):
             log(f"-> Generating ZIP for: {folder_name}...")
-            
-            # --- FIX: Create in TEMP directory first to avoid infinite loop ---
             with tempfile.TemporaryDirectory() as temp_dir:
                 temp_zip_base = os.path.join(temp_dir, folder_name)
-                # Create zip in temp folder
                 shutil.make_archive(temp_zip_base, 'zip', folder_path)
-                
-                # Move the created zip to the actual destination
                 shutil.move(f"{temp_zip_base}.zip", zip_path)
 
             log(f"   Created {zip_name}")
-            
-            # Stage the new zip file
             run_git_command(f"git add {zip_path}")
             changes_made = True
-        else:
-            # ZIP already exists
-            pass
 
-        # Prepare Metadata
         metadata = config.get("metadata", {})
         thumb_relative = metadata.get("thumbnailImage", "thumb.gif")
         
@@ -107,7 +94,6 @@ def main():
             "Author": metadata.get("author", "Unknown"),
             "Description": metadata.get("description", "")
         }
-        
         payload_list.append(wallpaper_obj)
 
     # --- 3. Git Operations ---
@@ -118,26 +104,30 @@ def main():
         run_git_command('git commit -m "Auto-generate wallpaper ZIPs [skip ci]"')
         run_git_command('git push')
         log("Git push complete.")
-    else:
-        log("No new ZIPs to generate.")
 
+    # --- 4. Send to API using CloudScraper ---
     log(f"Sending {len(payload_list)} wallpapers to API...")
+    
+    # Create the Scraper instance (simulates a real browser)
+    scraper = cloudscraper.create_scraper() 
+
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_token}",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        # ADD THESE TWO LINES:
-        "Accept": "*/*",
-        "Origin": "https://dkydivyansh.com",
+        # CloudScraper handles the User-Agent automatically, 
+        # but we add Referer to look legit
         "Referer": "https://dkydivyansh.com/Project/admin.php" 
     }
 
     try:
-        response = requests.post(API_URL, json=payload_list, headers=headers)
+        # Use scraper.post instead of requests.post
+        response = scraper.post(API_URL, json=payload_list, headers=headers)
+        
         if response.status_code == 200:
              log(f"Success! API Response: {response.text}")
         else:
-             log(f"API Failed: {response.status_code} - {response.text}")
+             # If it fails, print the first 200 chars to debug
+             log(f"API Failed: {response.status_code} - {response.text[:200]}...")
              sys.exit(1)
     except Exception as e:
         log(f"Failed to send to API: {e}")
