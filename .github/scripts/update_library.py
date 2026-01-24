@@ -121,8 +121,7 @@ def main():
     else:
         log("No new ZIPs to generate.")
 
-   log(f"Sending {len(payload_list)} wallpapers to API...")
-    
+    log(f"Sending {len(payload_list)} wallpapers to API...")
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_token}",
